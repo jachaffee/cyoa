@@ -54,7 +54,7 @@
     </div>
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script type=text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
     <script src="/static/js/reveal.js"></script>
 
     <script>
@@ -66,6 +66,24 @@
         theme: Reveal.getQueryHash().theme,
         transition: Reveal.getQueryHash().transition || 'default',
         dependencies: []
+      });
+
+      $(document).ready(function() {
+        namespace = '/cyoa';
+        var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+
+        /* add and edit choices here */
+        var appropriate_choices = ['done', 'more', 'yes', 'no'];
+
+        socket.on('msg', function(msg) {
+          /*ensure valid vote and div exists */
+          if (appropriate_choices.indexOf(msg.div) >= 0) {
+            var checkDiv = $('#' + msg.dv);
+            if (checkDiv.length > 0) {
+              checkDiv.html(msg.val);
+            }
+          }
+        });
       });
     </script>
   </body>
